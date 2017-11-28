@@ -1,0 +1,76 @@
+<script type="text/javascript">
+    RED.nodes.registerType('thingy',{
+        category: 'thingy',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+            uuid: {value:""},
+            temperature: {value: 1000},
+            pressure: {value: 1000},
+            humidity: {value: 1000},
+            color: {value: 1000},
+            gas: {value: 1}
+        },
+        inputs:1,
+        outputs:6,
+        icon: "physical-web.png",
+        label: function() {
+            return this.name||"thingy";
+        },
+        inputLabels: "led",
+        outputLabels: ["temperature","pressure","humidity","gas","color","button"],
+        oneditprepare: function() {
+            $.ajax("http://api.thing.zone/",{
+                success: function(uuids) {
+                    console.log(uuids);
+                    var options = uuids.map(function(uuid) {
+                        var option = document.createElement('option');
+                        option.value = uuid;
+                        return option;
+                    });
+                    $("#uuids")
+                        .empty()
+                        .append(options);
+                }
+            });
+        }
+    });
+</script>
+
+<script type="text/x-red" data-template-name="thingy">
+    <div class="form-row">
+        <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-uuid"><i class="fa fa-cube"></i> UUID</label>
+        <input id="node-input-uuid" list="uuids">
+        <datalist id="uuids">
+            // <option value="0123456789ab">
+        </datalist>
+    </div>
+    <div class="form-row">
+        <label for="node-input-temperature"><i class="fa fa-thermometer"></i> Temperature</label>
+        <input type="number" id="node-input-temperature" placeholder="Interval">
+    </div>
+    <div class="form-row">
+        <label for="node-input-pressure"><i class="fa fa-tachometer"></i> Pressure</label>
+        <input type="number" id="node-input-pressure" placeholder="Interval">
+    </div>
+    <div class="form-row">
+        <label for="node-input-humidity"><i class="fa fa-tint"></i> Humidity</label>
+        <input type="number" id="node-input-humidity" placeholder="Interval">
+    </div>
+    <div class="form-row">
+        <label for="node-input-color"><i class="fa fa-eye"></i> Color</label>
+        <input type="number" id="node-input-color" placeholder="Interval">
+    </div>
+    <div class="form-row">
+        <label for="node-input-gas"><i class="fa fa-eyedropper"></i> Gas</label>
+        <input type="number" id="node-input-gas" placeholder="Mode">
+    </div>
+</script>
+
+<script type="text/x-red" data-help-name="thingy">
+    <p>A thingy:52 node that feeds data from <a href="http://api.thing.zone">api.thing.zone</a></p>
+</script>
